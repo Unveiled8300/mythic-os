@@ -1,0 +1,79 @@
+{
+  "token_budget_cap": 2000,
+  "force_emit_interval": 5,
+  "force_emit_fragments": ["security"],
+  "phases": [
+    {
+      "phase": "discovery",
+      "keywords": ["idea", "project", "PRD", "requirements", "interview", "product-brief", "team-discovery", "SPEC.md", "new project", "new feature", "prd-ingest"],
+      "fragment_path": "fragments/discovery.md",
+      "priority": 2,
+      "token_estimate": 800
+    },
+    {
+      "phase": "planning",
+      "keywords": ["sprint", "plan", "decompose", "SPRINT.md", "sprint-plan", "task breakdown", "atomic task", "T-01", "T-02", "T-03"],
+      "fragment_path": "fragments/planning.md",
+      "priority": 2,
+      "token_estimate": 700
+    },
+    {
+      "phase": "implementation",
+      "keywords": ["implement", "T-", "build", "code", "dispatch", "frontend", "backend", "FE", "BE"],
+      "fragment_path": "fragments/implementation.md",
+      "priority": 1,
+      "token_estimate": 750
+    },
+    {
+      "phase": "verification",
+      "keywords": ["QA", "verify", "test", "review", "qa-verify", "PASS", "REJECT", "regression"],
+      "fragment_path": "fragments/verification.md",
+      "priority": 2,
+      "token_estimate": 700
+    },
+    {
+      "phase": "deployment",
+      "keywords": ["deploy", "ship", "production", "staging", "CI/CD", "pipeline", "team-deploy", "monitor"],
+      "fragment_path": "fragments/deployment.md",
+      "priority": 3,
+      "token_estimate": 600
+    },
+    {
+      "phase": "governance",
+      "keywords": ["LIBRARY.md", "Storyteller", "UUID", "audit", "team-audit", "governance", "error-record", "ADR", "reflect"],
+      "fragment_path": "fragments/governance.md",
+      "priority": 3,
+      "token_estimate": 500
+    }
+  ],
+  "standalone": [
+    {
+      "name": "security",
+      "keywords": ["security", "HIPAA", "secrets", "injection", "sanitize", "compliance", "CA privacy"],
+      "fragment_path": "fragments/security.md",
+      "priority": 1,
+      "token_estimate": 800
+    },
+    {
+      "name": "taste",
+      "keywords": ["TASTE", "quality", "code review", "clean code", "architecture", "UX", "accessibility"],
+      "fragment_path": "fragments/taste.md",
+      "priority": 3,
+      "token_estimate": 500
+    },
+    {
+      "name": "marketing",
+      "keywords": ["brand", "voice", "SEO", "metadata", "persona", "B2B", "B2C", "marketing"],
+      "fragment_path": "fragments/marketing.md",
+      "priority": 3,
+      "token_estimate": 450
+    },
+    {
+      "name": "brain-patterns",
+      "keywords": ["error", "bug", "fix", "broken", "failing", "crash", "mistake", "wrong", "issue", "problem", "debug"],
+      "fragment_path": "fragments/brain-patterns.md",
+      "priority": 2,
+      "token_estimate": 500
+    }
+  ]
+}

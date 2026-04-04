@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+# Pre-push hook — scaffolded by Claude OS nextjs-supabase stack
+# Copy to .git/hooks/pre-push in your project
+set -euo pipefail
+
+FAILURES=""
+
+while read local_ref local_sha remote_ref remote_sha; do
+  # ── Gate 1: No force push to main/master ──────────────────
+  if [[ "$remote_ref" == *"refs/heads/main"* ]] || [[ "$remote_ref" == *"refs/heads/master"* ]]; then
+    if [ "$remote_sha" != "0000000000000000000000000000000000000000" ]; then
+      merge_base=$(git merge-base "$remote_sha" "$local_sha" 2>/dev/null || echo "")
+      if [ -n "$merge_base" ] && [ "$merge_base" != "$remote_sha" ]; then
+        FAILURES="${FAILURES}\n  BLOCKED: Force push to ${remote_ref##*/} not allowed"
+      fi
+    fi
+  fi
+done
+
+# ── Gate 2: Tests must pass ─────────────────────────────────
+if [ -f "package.json" ] && grep -q '"test"' package.json 2>/dev/null; then
+  TEST_CMD=$(node -p "try{JSON.parse(require('fs').readFileSync('package.json','utf8')).scripts.test||''}catch(e){''}" 2>/dev/null)
+  if [ -n "$TEST_CMD" ] && [ "$TEST_CMD" != 'echo "Error: no test specified" && exit 1' ]; then
+    if ! npm test --silent 2>/dev/null; then
+      FAILURES="${FAILURES}\n  TESTS: npm test failed"
+    fi
+  fi
+fi
+
+# ── Gate 3: Build must succeed ──────────────────────────────
+if [ -f "package.json" ] && grep -q '"build"' package.json 2>/dev/null; then
+  if ! npm run build --silent 2>/dev/null; then
+    FAILURES="${FAILURES}\n  BUILD: npm run build failed"
+  fi
+fi
+
+# ── Gate 4: Type check ──────────────────────────────────────
+if [ -f "tsconfig.json" ]; then
+  if ! npx tsc --noEmit 2>/dev/null; then
+    FAILURES="${FAILURES}\n  TYPES: TypeScript errors found"
+  fi
+fi
+
+# ── Verdict ─────────────────────────────────────────────────
+if [ -n "$FAILURES" ]; then
+  echo "" >&2
+  echo "PRE-PUSH FAILED:" >&2
+  echo -e "$FAILURES" >&2
+  exit 1
+fi
+exit 0

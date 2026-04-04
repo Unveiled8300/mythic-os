@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# Commit-msg hook — validates conventional commit format
+# Copy to .git/hooks/commit-msg in your project
+
+MSG_FILE="$1"
+MSG=$(head -1 "$MSG_FILE")
+
+# Allow merge commits
+echo "$MSG" | grep -qE '^Merge ' && exit 0
+
+# Pattern: type(optional-scope): lowercase description
+PATTERN='^(feat|fix|docs|refactor|test|chore|ci|style|perf)(\([a-z0-9A-Z_-]+\))?: [a-z].*$'
+
+if ! echo "$MSG" | grep -qE "$PATTERN"; then
+  echo "" >&2
+  echo "COMMIT-MSG FAILED:" >&2
+  echo "  Message: $MSG" >&2
+  echo "  Required: type(scope): lowercase description" >&2
+  echo "  Types: feat|fix|docs|refactor|test|chore|ci|style|perf" >&2
+  echo "  Example: feat(auth): add google oauth login" >&2
+  exit 1
+fi
+
+if [ ${#MSG} -gt 72 ]; then
+  echo "" >&2
+  echo "COMMIT-MSG FAILED: Subject is ${#MSG} chars (max 72)" >&2
+  exit 1
+fi
+exit 0

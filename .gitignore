@@ -1,0 +1,98 @@
+# MACHINE-LOCAL STATE (never portable)
+
+settings.local.json
+projects/
+history.jsonl
+backups/
+cache/
+debug/
+file-history/
+ide/
+shell-snapshots/
+plugins/
+plans/
+memory/
+sessions/
+session-env/
+mcp-needs-auth-cache.json
+vercel-plugin-*
+skills/**/.claude/
+.credentials.json
+
+# PERSONAL ACCUMULATION (stays local, never distributed)
+
+# Brain knowledge (accumulated per-user across builds)
+brain/log/errors/*
+brain/log/decisions/*
+brain/log/fixes/*
+brain/patterns/*
+brain/playbooks/*
+brain/log/fragment-usage.jsonl
+!brain/index.md
+
+# Error records content (real errors from real builds)
+error-records/*.md
+!error-records/.gitkeep
+
+# Experiment results (real data from self-iterate runs)
+experiments/**/results.tsv
+experiments/**/report.md
+experiments/**/final_artifact.md
+
+# Project directories (user's actual projects)
+projects-mythic/
+
+# Project-specific files (not part of the framework)
+SPRINT.md
+SPEC.md
+HANDOFF.md
+GOVERNANCE-SPRINT.md
+mvp_prd.md
+
+# Version history (contains timestamped personal activity)
+LIBRARY-HISTORY.md
+
+# SECURITY BASELINE
+
+.env
+.env.*
+*.local.env
+secrets/
+credentials/
+*.secret
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cer
+*.der
+id_rsa
+id_ed25519
+id_ecdsa
+*.ppk
+.aws/
+.gcp/
+.azure/
+gcloud/
+service-account*.json
+*-credentials.json
+*.token
+*.jwt
+auth.json
+
+# OS / EDITOR NOISE
+
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+
+# LOCK FILES
+
+*.lock

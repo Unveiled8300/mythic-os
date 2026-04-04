@@ -1,0 +1,11 @@
+{
+  "version": "1.0.0",
+  "output": {
+    "directory": "output/dynamous/",
+    "format": "json"
+  },
+  "generation": {
+    "batch_size": 10,
+    "strict_mode": true
+  }
+}

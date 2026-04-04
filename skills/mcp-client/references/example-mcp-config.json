@@ -1,0 +1,23 @@
+{
+  "mcpServers": {
+    "zapier": {
+      "url": "https://mcp.zapier.com/api/v1/connect",
+      "api_key": "YOUR_ZAPIER_API_KEY_HERE"
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+    },
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "YOUR_GITHUB_TOKEN_HERE"
+      }
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/Users/your-username"]
+    }
+  }
+}

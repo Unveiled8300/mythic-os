@@ -1,0 +1,36 @@
+{
+  "name": "Your Brand Name",
+  "version": "1.0.0",
+  "colors": {
+    "primary": "#007AFF",
+    "secondary": "#5AC8FA",
+    "accent": "#FF2D55",
+    "neutral_dark": "#1C1C1E",
+    "neutral_light": "#F2F2F7",
+    "success": "#34C759",
+    "warning": "#FF9500",
+    "error": "#FF3B30",
+    "info": "#00C7FF",
+    "disabled": "#C7C7CC"
+  },
+  "fonts": {
+    "primary": {
+      "name": "Inter",
+      "url": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap",
+      "weights": [400, 500, 600, 700]
+    },
+    "secondary": {
+      "name": "Georgia",
+      "weights": [400, 700]
+    },
+    "mono": {
+      "name": "Courier New",
+      "weights": [400, 700]
+    }
+  },
+  "assets": {
+    "logo": "assets/logo.png",
+    "icon_light": "assets/icon_light.png",
+    "icon_dark": "assets/icon_dark.png"
+  }
+}

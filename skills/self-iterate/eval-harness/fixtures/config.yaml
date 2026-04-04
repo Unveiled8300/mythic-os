@@ -1,0 +1,31 @@
+# Fixture experiment config — used as reference data passed inline to claude --print
+# NOT read directly by eval_live_test.sh; included for documentation and future tooling
+
+experiment:
+  tag: "fixture-test"
+  created: "2026-03-28T00:00:00Z"
+  status: "completed"
+
+target:
+  artifact: "eval-harness/fixtures/target_artifact.md"
+  context_files: []
+
+evaluation:
+  command: "bash skills/self-iterate/eval_live_test.sh"
+  timeout_seconds: 120
+  criteria:
+    - "C1: Was the git branch created?"
+    - "C2: Was the git branch managed without conflict?"
+    - "C3: Did the skill complete without human intervention?"
+    - "C4: Was a visual representation of eval findings displayed?"
+    - "C5: Were before/after eval metrics displayed?"
+  num_trials: 3
+  success_threshold: 0.67
+
+optimization:
+  max_iterations: 150
+  branch: "experiment/fixture-test"
+
+history:
+  results_file: "eval-harness/fixtures/results.tsv"
+  report_dir: "eval-harness/fixtures/expected-report"

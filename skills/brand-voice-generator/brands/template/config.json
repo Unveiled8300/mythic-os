@@ -1,0 +1,11 @@
+{
+  "version": "1.0.0",
+  "output": {
+    "directory": "output/",
+    "format": "json"
+  },
+  "generation": {
+    "batch_size": 5,
+    "strict_mode": true
+  }
+}

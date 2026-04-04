@@ -1,0 +1,38 @@
+{
+  "name": "Dynamous",
+  "version": "1.0.0",
+  "colors": {
+    "primary": "#0D66CC",
+    "secondary": "#418BFF",
+    "accent": "#FF6B35",
+    "neutral_dark": "#0F172A",
+    "neutral_light": "#F8FAFC",
+    "success": "#10B981",
+    "warning": "#F59E0B",
+    "error": "#EF4444",
+    "info": "#06B6D4",
+    "disabled": "#CBD5E1"
+  },
+  "fonts": {
+    "primary": {
+      "name": "Poppins",
+      "url": "https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap",
+      "weights": [400, 500, 600, 700]
+    },
+    "secondary": {
+      "name": "Merriweather",
+      "url": "https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap",
+      "weights": [400, 700]
+    },
+    "mono": {
+      "name": "Source Code Pro",
+      "url": "https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600&display=swap",
+      "weights": [400, 600]
+    }
+  },
+  "assets": {
+    "logo": "assets/logo.svg",
+    "icon_light": "assets/icon_light.svg",
+    "icon_dark": "assets/icon_dark.svg"
+  }
+}

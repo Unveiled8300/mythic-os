@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+# Pre-commit hook — scaffolded by Claude OS nextjs-supabase stack
+# Copy to .git/hooks/pre-commit in your project
+set -euo pipefail
+
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM)
+[ -z "$STAGED_FILES" ] && exit 0
+
+FAILURES=""
+
+# ── Gate 1: Secret Detection ──────────────────────────────────
+SECRET_PATTERNS=(
+  'sk_live_[A-Za-z0-9]'
+  'sk_test_[A-Za-z0-9]'
+  'AKIA[0-9A-Z]{16}'
+  'ghp_[A-Za-z0-9]{36}'
+  'xoxb-[A-Za-z0-9]'
+  'sk-[A-Za-z0-9]{20,}'
+  '-----BEGIN (RSA |EC )?PRIVATE KEY-----'
+  'password\s*[:=]\s*["'"'"'][^\s]{8,}'
+  'api[_-]?key\s*[:=]\s*["'"'"'][A-Za-z0-9]{16,}'
+)
+
+for file in $STAGED_FILES; do
+  [[ "$file" == *.png ]] || [[ "$file" == *.jpg ]] || [[ "$file" == *.ico ]] || \
+  [[ "$file" == *.woff* ]] || [[ "$file" == package-lock.json ]] || \
+  [[ "$file" == *.lock ]] && continue
+
+  content=$(git diff --cached --unified=0 -- "$file" | grep '^\+' | grep -v '^\+\+\+' || true)
+  [ -z "$content" ] && continue
+
+  for pattern in "${SECRET_PATTERNS[@]}"; do
+    if echo "$content" | grep -qE "$pattern"; then
+      FAILURES="${FAILURES}\n  SECRET: Pattern found in $file"
+      break
+    fi
+  done
+done
+
+# ── Gate 2: Forbidden Files ───────────────────────────────────
+for file in $STAGED_FILES; do
+  case "$file" in
+    .env|.env.local|.env.production|.env.*.local)
+      FAILURES="${FAILURES}\n  FORBIDDEN: $file must never be committed" ;;
+    *.pem|*.key|*.p12|*.pfx)
+      FAILURES="${FAILURES}\n  FORBIDDEN: $file (private key)" ;;
+  esac
+done
+
+# ── Gate 3: Lint ──────────────────────────────────────────────
+JS_TS_FILES=$(echo "$STAGED_FILES" | grep -E '\.(js|jsx|ts|tsx)$' || true)
+if [ -n "$JS_TS_FILES" ] && [ -f "package.json" ]; then
+  if grep -q '"lint"' package.json 2>/dev/null; then
+    if ! npx eslint --no-warn-ignored $JS_TS_FILES 2>/dev/null; then
+      FAILURES="${FAILURES}\n  LINT: ESLint errors in staged files"
+    fi
+  fi
+fi
+
+# ── Gate 4: .gitignore coverage ───────────────────────────────
+if [ -f ".env.example" ] && [ -f ".gitignore" ]; then
+  if ! grep -qE '^\.env$|^\.env\b' .gitignore; then
+    FAILURES="${FAILURES}\n  GITIGNORE: .env.example exists but .env not in .gitignore"
+  fi
+fi
+
+# ── Verdict ───────────────────────────────────────────────────
+if [ -n "$FAILURES" ]; then
+  echo "" >&2
+  echo "PRE-COMMIT FAILED:" >&2
+  echo -e "$FAILURES" >&2
+  echo "" >&2
+  exit 1
+fi
+exit 0
