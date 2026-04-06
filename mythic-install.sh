@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# install.sh — Claude OS installer
+# mythic-install.sh — Mythic OS installer
 #
-# Copies this governance system into ~/.claude, preserving any existing files
-# that are NOT part of Claude OS (personal plans, projects, etc.).
+# Copies Mythic OS governance system into ~/.claude, preserving any existing
+# files that are NOT part of Mythic OS (personal plans, projects, etc.).
 #
 # Usage:
-#   bash install.sh           # dry-run preview
-#   bash install.sh --apply   # apply the installation
+#   bash mythic-install.sh           # dry-run preview
+#   bash mythic-install.sh --apply   # apply the installation
 
 set -euo pipefail
 
@@ -19,9 +19,9 @@ for arg in "$@"; do
   case $arg in
     --apply) DRY_RUN=false ;;
     --help|-h)
-      echo "Usage: bash install.sh [--apply]"
+      echo "Usage: bash mythic-install.sh [--apply]"
       echo "  (no flags)  Preview what would be installed (dry run)"
-      echo "  --apply     Install Claude OS into ~/.claude"
+      echo "  --apply     Install Mythic OS into ~/.claude"
       exit 0
       ;;
   esac
@@ -29,7 +29,7 @@ done
 
 echo ""
 echo "╔══════════════════════════════════════╗"
-echo "║         Claude OS Installer          ║"
+echo "║        Mythic OS Installer         ║"
 echo "╚══════════════════════════════════════╝"
 echo ""
 
@@ -55,7 +55,6 @@ DIRS=(
 FILES=(
   "CLAUDE.md"
   "LIBRARY.md"
-  "LIBRARY-HISTORY.md"
   "settings.json"
 )
 
@@ -112,12 +111,12 @@ echo ""
 
 # ── Apply installation ────────────────────────────────────────────
 if $DRY_RUN; then
-  echo "Run 'bash install.sh --apply' to apply."
+  echo "Run 'bash mythic-install.sh --apply' to apply."
   echo ""
   exit 0
 fi
 
-echo "Installing Claude OS..."
+echo "Installing Mythic OS..."
 echo ""
 
 mkdir -p "$TARGET"
@@ -151,5 +150,5 @@ echo ""
 echo "Next steps:"
 echo "  1. Open a new Claude Code session"
 echo "  2. Type: /boot"
-echo "  3. Claude OS is ready."
+echo "  3. Mythic OS is ready."
 echo ""

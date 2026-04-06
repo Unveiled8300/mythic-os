@@ -44,7 +44,7 @@ cp "$SOURCE_DIR/CLAUDE.md" "$DIST_DIR/"
 cp "$SOURCE_DIR/LIBRARY.md" "$DIST_DIR/"
 cp "$SOURCE_DIR/settings.json" "$DIST_DIR/"
 cp "$SOURCE_DIR/README.md" "$DIST_DIR/" 2>/dev/null || true
-cp "$SOURCE_DIR/install.sh" "$DIST_DIR/" 2>/dev/null || true
+cp "$SOURCE_DIR/mythic-install.sh" "$DIST_DIR/" 2>/dev/null || true
 cp "$SOURCE_DIR/.gitignore" "$DIST_DIR/"
 
 # Rules (role contracts)
