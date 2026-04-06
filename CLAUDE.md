@@ -10,7 +10,9 @@ Run `/boot` at every session start. It loads the active project and current spri
 |------|----------------------|
 | No governance resource without Storyteller log | `/implement` pre-flight gate blocks dispatch |
 | Lint must exit 0 before Handoff Note | Pre-commit hook rejects |
-| No secrets hardcoded — use `.env` only | Pre-commit hook scans |
+| No secrets hardcoded — use `.env` only | `secret-scan.py` PreToolUse hook blocks Edit/Write |
+| No README.md, no implementation writes | `readme-gate.py` PreToolUse hook blocks Edit/Write in governed projects |
+| TDD red/green cycle for logic tasks | `tdd-gate.sh` script — skills run verify-red/verify-green via Bash |
 | Unregistered resources surfaced at session start | `/boot` SOP 0 audit |
 
 ## Behavioral Guardrails (Role-Enforced)
@@ -55,7 +57,8 @@ See `~/.claude/stacks/` for full templates. Select a stack before creating a new
 | `/team-mvp` | Fast build, skip ceremony | `/learning-opportunity` | Teaching mode |
 | `/team-deploy` | QA PASS to production | `/team-feature` | Add feature to live project |
 | `/team-audit` | Governance health check | `/project-plan` | Save plan to `.plans/` |
-| `/role-audit` | Data-driven role evaluation | | |
+| `/role-audit` | Data-driven role evaluation | `/arena` | Head-to-head comparison |
+| `/sweep` | Full-project scan+patch | `/feature-forge [T-ID]` | Multi-variant build |
 
 ## Roles
 Security Officer is always active. All others load on demand via skills (read their own `rules/*.md`).
@@ -65,7 +68,7 @@ Security Officer is always active. All others load on demand via skills (read th
 | Storyteller | Loaded by governance skills; contract at `rules/storyteller.md` |
 | Product Architect | `/product-brief`, `/prd-ingest`, `/team-discovery` |
 | Project Manager | `/sprint-plan`, `/implement`, `/team-fullstack` |
-| Lead Developer | `/implement`, `/team-fullstack`, `/team-mvp` |
+| Lead Developer | `/implement`, `/feature-forge`, `/team-fullstack`, `/team-mvp` |
 | QA Tester | `/qa-verify`, `/team-fullstack`, `/team-deploy` |
 | DevOps Engineer | `/deploy`, `/team-deploy` |
 | Frontend Developer | `/implement` (FE tasks) |

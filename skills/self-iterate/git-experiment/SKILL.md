@@ -61,9 +61,12 @@ Where `<tag>` is a user-provided or auto-generated identifier. Examples:
 
 **Steps:**
 
-1. Stage ONLY the target artifact file (never stage `results.tsv` or other generated files):
+1. Stage ONLY the target artifact file(s) (never stage `results.tsv` or other generated files):
    ```bash
+   # Single artifact mode:
    git add <TARGET_ARTIFACT_PATH>
+   # Artifact group mode — stage only files actually modified:
+   git add <MODIFIED_GROUP_FILE_1> <MODIFIED_GROUP_FILE_2>
    ```
 
 2. Commit with a descriptive message following this format:

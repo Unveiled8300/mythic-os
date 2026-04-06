@@ -71,6 +71,10 @@ Open SPRINT.md. Find the task ID(s) specified in the invocation. Read:
 If a dependency task is not yet in the Done section, stop:
 > "T-[N] depends on T-[M], which is not yet complete. Complete T-[M] first."
 
+**Feature Forge check:** If SPRINT.md Tech Selection Record contains `Forge Mode: auto` and the
+task is size M, route to `/feature-forge T-[N]` instead of continuing to Step 2. Feature Forge
+will handle dispatch, evaluation, variant selection, and handoff internally.
+
 ### Wave-Based Multi-Task Dispatch
 
 When multiple task IDs are provided (e.g., `/implement T-01 T-02 T-03`):

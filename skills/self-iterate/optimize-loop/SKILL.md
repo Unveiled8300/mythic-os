@@ -33,9 +33,16 @@ This is the core engine — the equivalent of autoresearch's `program.md` experi
    - Determine the current best pass rate (highest pass_rate among `keep` and `baseline` rows)
    - Review what has been tried before (descriptions column)
 
-3. **Read the target artifact** in full:
+3. **Read the target artifact(s)** in full:
+   - If `target.artifact_group` is defined: read ALL files in the group.
+   - If only `target.artifact` is defined: read that single file.
    ```bash
+   # Single mode:
    cat <TARGET_ARTIFACT>
+   # Group mode:
+   cat <GROUP_FILE_1>
+   cat <GROUP_FILE_2>
+   # ... for each file in artifact_group
    ```
 
 4. **Read all context files** listed in `config.yaml`:
@@ -43,6 +50,23 @@ This is the core engine — the equivalent of autoresearch's `program.md` experi
    cat <CONTEXT_FILE_1>
    cat <CONTEXT_FILE_2>
    ```
+
+4b. **Read prior experiment patterns** (if any exist):
+   ```bash
+   ls experiments/*/patterns.md 2>/dev/null
+   ```
+   If pattern files exist, read ALL of them. Extract:
+   - Which strategy types were effective for similar artifact types
+   - Which strategy types consistently failed
+   - Any anti-patterns to avoid
+   - Cross-experiment insights
+   
+   Use this knowledge to bias Phase 1 strategy selection:
+   - **Prioritize** strategy types with `outcome: keep` in prior patterns for the same `artifact_type`
+   - **Deprioritize** (but don't exclude) strategy types that appear in anti-patterns
+   - **Apply** cross-experiment insights as additional context for modification planning
+   
+   If no pattern files exist, proceed as before (no bias).
 
 5. **Verify branch state:**
    ```bash
@@ -58,10 +82,14 @@ Based on your understanding of:
 - What has been tried before (results.tsv)
 - What worked and what didn't
 
-Propose a **single, focused modification** to the target artifact. The modification should:
+Propose a **single, focused modification** to the target artifact(s). The modification should:
 - Address a specific criterion that may be failing
 - Be small enough to isolate its effect
 - Be clearly describable in one line
+
+**Artifact group mode:** When operating on an artifact group, the modification may target any file in the group. State which file(s) will be changed and why. The modification should still be focused — changing all files simultaneously is discouraged. Prefer changing the fewest files necessary to address the failing criterion.
+
+**Pattern-informed strategy selection:** If prior experiment patterns were loaded in Phase 0 step 4b, use them to inform strategy choice. If patterns show a strategy was effective on similar artifact types, try that first. If patterns show a strategy consistently failed, try other approaches first. Patterns are guidance, not deterministic — creative exploration still matters. After exhausting pattern-informed strategies, try novel approaches.
 
 Write a 1-line description of the change before making it.
 
@@ -78,11 +106,14 @@ Write a 1-line description of the change before making it.
 
 ### Phase 2: Apply & Commit
 
-1. **Edit the target artifact** with the planned modification.
+1. **Edit the target artifact(s)** with the planned modification.
 
 2. **Commit the change** (invoke `git-experiment` skill, Operation 2):
    ```bash
+   # Single mode:
    git add <TARGET_ARTIFACT>
+   # Group mode — stage only files actually modified this iteration:
+   git add <MODIFIED_GROUP_FILE_1> <MODIFIED_GROUP_FILE_2>
    git commit -m "experiment: <1-line description>"
    ```
 
@@ -110,6 +141,8 @@ Write a 1-line description of the change before making it.
    ```
 
 3. **Parse the pass rate** into a comparable number.
+
+   If `evaluation.models` is configured, the eval harness returns per-model pass rates and an overall average. Use the overall average for the Phase 4 grade decision. Log per-model breakdown in the description column of results.tsv for pattern analysis.
 
 ### Phase 4: Grade & Decide
 

@@ -51,7 +51,11 @@ The user provides (interactively or via parameters):
 
 If the user has not provided all inputs, interactively prompt for them:
 
-1. **Target artifact:** Ask what file they want to optimize. Validate it exists.
+1. **Target artifact(s):** Ask what file(s) they want to optimize.
+   - **Single artifact:** A single file path. Stored as `target.artifact`.
+   - **Artifact group:** Multiple related files that must be modified and evaluated as a unit. Stored as `target.artifact_group` (list of paths). Use this when changes to one file require coordinated changes to others (e.g., a skill and its sub-skills, a config and its consumer).
+   
+   Validate all files exist. If `artifact_group` is specified, `artifact` is ignored.
 
 2. **Experiment tag:** Propose a tag based on today's date and the artifact name.
    - Format: `<month><day>-<artifact-shortname>` (e.g., `mar27-claude-md`)
@@ -166,13 +170,27 @@ experiment:
   status: "active"          # active | completed | abandoned
 
 target:
-  artifact: "<relative_path>"
+  artifact: "<relative_path>"            # Single file mode
+  artifact_group:                         # Multi-file mode (takes precedence if present)
+    - "<relative_path_1>"
+    - "<relative_path_2>"
   context_files:
     - "<file_1>"
     - "<file_2>"
 
 evaluation:
   command: "<eval_command>"
+  mode: "shell"                           # shell (default) | agent
+  agent_config:                           # Only used when mode: agent
+    task_prompt: "<sample task for the artifact>"
+    criteria_checks:                      # Criteria mapped to output assertions
+      - criterion: "<criterion text>"
+        assertion: "<grep pattern or check to run against agent output>"
+    model: "sonnet"                       # Model for eval agent (default: sonnet for cost)
+    timeout_seconds: 120                  # Per-agent-invocation timeout
+  models:                                 # Optional: cross-model evaluation
+    - "claude-opus-4-6"
+    - "claude-sonnet-4-6"
   timeout_seconds: <timeout>
   criteria:
     - "<criterion_1>"

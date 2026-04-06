@@ -437,6 +437,49 @@ Paths are relative to `~/.claude/`.
   desc: Brownfield onboarding; generates CODEBASE.md from existing repo
   updated: 2026-03-28
 
+- id: 9fdf1e99-947c-4392-9297-ca6258f804c0
+  name: sweep
+  type: skill
+  ver: 1.0.0
+  path: skills/sweep/SKILL.md
+  cmd: /sweep
+  desc: Proactive full-project vulnerability scan, fragility detection, auto-patch
+  updated: 2026-04-04
+
+- id: 05be11c0-36bf-4cf7-8b5a-5ffaa9fe1ec6
+  name: arena
+  type: skill
+  ver: 1.0.0
+  path: skills/arena/SKILL.md
+  cmd: /arena
+  desc: Agnostic head-to-head matchup framework; user-defined contestants, tasks, scoring
+  updated: 2026-04-04
+
+- id: 60972729-a3c2-4d94-af81-4a505214f45c
+  name: arena-run-matchup
+  type: skill
+  ver: 1.0.0
+  path: skills/arena/run-matchup/SKILL.md
+  desc: Executes all arena contestants in isolated workspaces, collects outputs
+  updated: 2026-04-04
+
+- id: 193685f2-7035-4909-a2fe-b863db431d36
+  name: arena-scorecard
+  type: skill
+  ver: 1.0.0
+  path: skills/arena/scorecard/SKILL.md
+  desc: Scores arena contestants, renders comparison report with rankings
+  updated: 2026-04-04
+
+- id: 4baa4b90-85a5-4b10-97c6-d240b91d2426
+  name: feature-forge
+  type: skill
+  ver: 1.0.0
+  path: skills/feature-forge/SKILL.md
+  cmd: /feature-forge
+  desc: Multi-variant feature generation; spawns N parallel implementations, evaluates, selects best
+  updated: 2026-04-04
+
 # --- Stack Templates ---
 - id: 31742478-cf01-40c8-96bf-7bad925ae734
   name: stack-nextjs-supabase

@@ -158,6 +158,34 @@ For each task ID, read its description in SPRINT.md and classify:
 | Full-stack | FE and BE parts are tightly coupled (e.g., new form + new endpoint) | Spawn Backend Developer first; then Frontend Developer after BE is complete |
 | Independent FE + BE | Two separate tasks that can be done in parallel | Spawn both specialists simultaneously |
 
+### Step 1b: TDD Classification
+
+For each task, determine whether it requires Test-Driven Development (red/green cycle):
+
+| Classification | TDD Required | Rationale |
+|---|---|---|
+| BE task with business logic | Yes | Logic correctness benefits from test-first design |
+| BE task with data transformations | Yes | Input/output contracts are testable |
+| Full-stack task with API contract | Yes (BE portion) | API shape should be test-defined |
+| FE task with complex state logic | Yes | State machines, form validation, computed values |
+| FE task — pure UI/layout/styling | No | Visual output; tested via visual/a11y check |
+| Config/setup/infra task | No | No business logic to test |
+| Documentation task | No | No executable behavior |
+
+Record the TDD classification in the dispatch context:
+```
+TDD: required | not-required
+```
+
+When TDD is required, the specialist dispatch prompt (Step 3) must include:
+> "This task requires TDD. Before writing implementation code:
+> 1. Write a failing test that captures the expected behavior from the task description
+> 2. Run the test suite — confirm it FAILS (red)
+> 3. Implement the minimum code to make the test pass
+> 4. Run the test suite — confirm it PASSES (green)
+> 5. Refactor if needed — confirm tests still pass
+> Report the red/green cycle: test file path, red run output (exit code != 0), green run output (exit code 0)."
+
 ### Step 2: Marketing Header Standard Gate (FE tasks only)
 
 **Before dispatching any FE task that includes HTML pages or public-facing UI:**

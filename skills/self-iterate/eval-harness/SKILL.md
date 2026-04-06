@@ -36,10 +36,20 @@ Parse the following values:
 - `TIMEOUT` = `evaluation.timeout_seconds`
 - `NUM_TRIALS` = `evaluation.num_trials`
 - `THRESHOLD` = `evaluation.success_threshold`
+- `EVAL_MODE` = `evaluation.mode` (default: `shell`)
+- `EVAL_MODELS` = `evaluation.models` (optional list)
 
-### Step 2: Execute Trials
+### Step 1b: Determine Evaluation Mode
 
-Run the eval command `NUM_TRIALS` times sequentially. For each trial:
+Read `evaluation.mode` from config.yaml:
+- If `mode: shell` or `mode` is absent: proceed to Step 2 (Shell-Based Trials).
+- If `mode: agent`: proceed to Step 2-Agent (Agent-Based Trials) instead.
+
+If `evaluation.models` is defined, both Step 2 and Step 2-Agent run trials per-model (see cross-model dispatch below).
+
+### Step 2: Execute Trials (Shell Mode)
+
+Run the eval command `NUM_TRIALS` times sequentially (or `NUM_TRIALS × len(EVAL_MODELS)` if cross-model). For each trial:
 
 1. **Start timer:**
    ```bash
@@ -48,8 +58,14 @@ Run the eval command `NUM_TRIALS` times sequentially. For each trial:
 
 2. **Run the eval command with timeout:**
    ```bash
+   # Standard (single model or no model specified):
    timeout <TIMEOUT> <EVAL_CMD> > trial_<N>_stdout.tmp 2> trial_<N>_stderr.tmp
    EXIT_CODE=$?
+
+   # Cross-model dispatch (when evaluation.models is defined):
+   # For each model in EVAL_MODELS, run the trial with EVAL_MODEL env var:
+   EVAL_MODEL="<model>" timeout <TIMEOUT> <EVAL_CMD> > trial_<N>_<model>_stdout.tmp 2> trial_<N>_<model>_stderr.tmp
+   # The eval script can use $EVAL_MODEL to pass --model to claude invocations
    ```
 
 3. **Record result:**
@@ -73,6 +89,45 @@ Run the eval command `NUM_TRIALS` times sequentially. For each trial:
    rm -f trial_<N>_stdout.tmp trial_<N>_stderr.tmp
    ```
 
+### Step 2-Agent: Execute Trials (Agent Mode)
+
+When `evaluation.mode: agent`, each trial invokes a lightweight agent instead of a shell command.
+
+For each trial (1 to NUM_TRIALS), and for each model in EVAL_MODELS (or the default `agent_config.model` if no cross-model):
+
+1. **Construct the agent invocation:**
+   ```bash
+   claude \
+     --print \
+     --system-prompt "$(cat <TARGET_ARTIFACT>)" \
+     --model <model> \
+     --tools "" \
+     --permission-mode bypassPermissions \
+     --output-format text \
+     "<agent_config.task_prompt>" > trial_<N>_output.tmp 2> trial_<N>_stderr.tmp
+   ```
+
+   For artifact groups, concatenate all group files as the system prompt:
+   ```bash
+   --system-prompt "$(cat <GROUP_FILE_1> <GROUP_FILE_2> ...)"
+   ```
+
+2. **Check criteria against agent output:**
+   For each `criteria_check` in `agent_config.criteria_checks`:
+   ```bash
+   grep -qE "<assertion>" trial_<N>_output.tmp
+   ```
+   Record per-criterion pass/fail.
+
+3. **Determine trial result:**
+   - All criteria pass → trial PASS
+   - Any criterion fails → trial FAIL
+   - Agent invocation times out or crashes → trial TIMEOUT/FAIL
+
+4. **Record result and clean up** (same as shell Step 2, items 3-6).
+
+Proceed to Step 3 (Compute Verdict) — the verdict computation is mode-independent.
+
 ### Step 3: Compute Verdict
 
 ```
@@ -86,6 +141,17 @@ else:
     VERDICT = "FAIL"
 
 # Special case: if ALL trials crash (exit code > 1 or timeout), VERDICT = "CRASH"
+```
+
+**Cross-model aggregation:** When `evaluation.models` is specified:
+```
+Per-model pass rate = PASSES_for_model / NUM_TRIALS
+Overall pass rate = average(all per-model pass rates)
+```
+The verdict uses overall pass rate against the threshold. Report per-model breakdown in the structured output:
+```
+per_model:  claude-opus-4-6: 4/5 (0.80) | claude-sonnet-4-6: 3/5 (0.60)
+pass_rate:  7/10 (0.70)
 ```
 
 ### Step 4: Output Structured Results
@@ -153,6 +219,8 @@ The script handles all the trial execution, timing, output capture, and verdict 
 6. **Structured output is sacred.** The output format must match exactly — the optimize-loop parses it.
 
 ## Task Replay Guidelines
+
+> **Note:** When `evaluation.mode: agent` is set in config.yaml, the eval harness handles agent invocation natively via Step 2-Agent. The guidelines below are for writing custom shell-based eval scripts that invoke agents manually. Prefer agent mode for new experiments on non-code artifacts (skills, rules, prompts).
 
 When evaluating non-code artifacts (skills, CLAUDE.md, workflows), the eval command should implement **task replay** — actually using the artifact in a realistic scenario:
 

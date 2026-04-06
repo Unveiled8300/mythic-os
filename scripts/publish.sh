@@ -114,10 +114,13 @@ rm -f "$DIST_DIR"/brain/playbooks/*.md 2>/dev/null || true
 rm -f "$DIST_DIR"/brain/log/fragment-usage.jsonl 2>/dev/null || true
 rm -f "$DIST_DIR"/error-records/*.md 2>/dev/null || true
 
-# Remove experiment result data (keep config/structure)
+# Remove experiment runtime data (results, reports, configs from past runs)
 find "$DIST_DIR" -name "results.tsv" -delete 2>/dev/null || true
 find "$DIST_DIR" -name "final_artifact.md" -path "*/experiments/*" -delete 2>/dev/null || true
 find "$DIST_DIR" -name "report.md" -path "*/experiments/*" -delete 2>/dev/null || true
+find "$DIST_DIR" -name "patterns.md" -path "*/experiments/*" -delete 2>/dev/null || true
+rm -rf "$DIST_DIR"/skills/self-iterate/experiments 2>/dev/null || true
+rm -f "$DIST_DIR"/skills/self-iterate/config.yaml 2>/dev/null || true
 
 # Remove any project-specific files
 rm -f "$DIST_DIR"/SPRINT.md "$DIST_DIR"/SPEC.md "$DIST_DIR"/HANDOFF.md 2>/dev/null || true

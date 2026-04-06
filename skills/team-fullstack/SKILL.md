@@ -98,6 +98,19 @@ Run the Lead Developer Tech Selection:
 
 For each Atomic Task in SPRINT.md (in dependency order):
 
+### 3-pre: README.md Gate (First Task Only)
+
+Before dispatching the first Atomic Task, verify:
+
+```bash
+test -f [project-root]/README.md && echo "EXISTS" || echo "MISSING"
+```
+
+- **EXISTS** — proceed to 3a.
+- **MISSING** — STOP. Before any task dispatch, the Lead Developer must create `README.md` per Lead Developer SOP 5 (`rules/lead-developer.md`). This is an infrastructure prerequisite, not a SPRINT.md task. Resume the task loop only after README.md is committed.
+
+This gate runs once per sprint. After the first task passes it, subsequent tasks skip this check.
+
 ### 3a: Check Context Budget
 Run `/usage`. If ≥ 70%: "Context at [X]%. Running `/compact` before starting T-[N]."
 
@@ -105,11 +118,38 @@ Run `/usage`. If ≥ 70%: "Context at [X]%. Running `/compact` before starting T
 Confirm MARKETING.md exists. If not: run `/metadata` first. Stop dispatch until complete.
 
 ### 3c: Classify and Dispatch
-Classify the task:
+
+**Feature Forge gate:** If Tech Selection Record contains `Forge Mode: auto` and task is size M,
+route to `/feature-forge T-[N]` instead of direct dispatch. Feature Forge handles the full
+classify → dispatch → evaluate → select → handoff cycle internally. Skip to Stage 3e after
+Feature Forge returns.
+
+If Feature Forge is not active, classify the task:
 - FE only → invoke Frontend Developer
 - BE only → invoke Backend Developer
 - Full-stack → Backend first, then Frontend
 - Independent parallel → both simultaneously
+
+**TDD Gate:** After classification, apply TDD classification per Lead Developer SOP 2 Step 1b.
+When TDD is required, the specialist executes this enforced sequence:
+
+1. **Write the test file** for the task's expected behavior.
+2. **Verify red** — run the gate script via Bash tool:
+   ```bash
+   bash ~/.claude/hooks/enforcement/tdd-gate.sh verify-red "<test_command>"
+   ```
+   This MUST exit 0 (meaning the test failed as expected). If it exits 1 (test passed prematurely), stop — the test is not testing new behavior.
+
+3. **Implement** the minimum code to satisfy the test.
+4. **Verify green** — run the gate script via Bash tool:
+   ```bash
+   bash ~/.claude/hooks/enforcement/tdd-gate.sh verify-green "<test_command>"
+   ```
+   This MUST exit 0 (meaning the test now passes). If it exits 1, the implementation is incomplete.
+
+5. **Record in Handoff Note:** test file path, red gate output, green gate output.
+
+If TDD is not required (pure UI/config/docs per Step 1b): skip this gate. When in doubt, require TDD — false positives waste less time than untested logic bugs caught only in QA.
 
 **Frontend Developer** (FE tasks):
 - Read SPEC.md Section 3 first — trace every component to a Section 3 statement

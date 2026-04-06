@@ -100,6 +100,30 @@ Run the application or feature against each criterion. Choose the appropriate me
 
 Evidence must be specific enough that another person could confirm the result independently.
 
+### Step 3b: TDD Verification (If Task Was TDD-Required)
+
+If the Handoff Note indicates `TDD: required`:
+
+1. **Verify commit ordering via gate script:**
+   ```bash
+   bash ~/.claude/hooks/enforcement/tdd-gate.sh verify-order [project-root]
+   ```
+   This checks git history to confirm test files were committed before or with implementation files.
+   - Exit 0 → ordering verified
+   - Exit 1 → flag: "TDD violation: implementation committed before tests."
+
+2. **Check red/green evidence in Handoff Note:**
+   The Handoff Note must contain output from both `tdd-gate.sh verify-red` and `tdd-gate.sh verify-green` calls.
+   - Present with both red and green gate output → record `TDD: verified` in QA PASS signal
+   - Missing or incomplete → flag as concern (not a REJECT, but noted): "TDD gate evidence incomplete in Handoff Note. Could not verify red/green cycle."
+
+3. **Run the tests independently:**
+   Execute the test file specified in the TDD report using the QA Toolchain:
+   ```bash
+   bash ~/.claude/hooks/enforcement/tdd-gate.sh verify-green "<test_command>"
+   ```
+   Must exit 0. If it exits 1, this is a standard SOP 1 FAIL — handle per SOP 4.
+
 ### Step 4: Document Each Criterion
 
 ```

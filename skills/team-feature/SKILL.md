@@ -74,6 +74,8 @@ Estimate sizes honestly. Flag any L-sized task for splitting before scheduling.
 
 ### Step 5: Implement
 
+**README.md check:** Before dispatching the first feature task, verify `[project-root]/README.md` exists. If missing (legacy project without README), create it per Lead Developer SOP 5 (`rules/lead-developer.md`) before proceeding. A live project should already have one — this is a safety net, not the normal path.
+
 Dispatch tasks per Lead Developer SOP 2. Follow the standard quality gates:
 - Specialist implements → lint passes → Handoff Note written
 - QA Tester verifies each task against the new Done Conditions

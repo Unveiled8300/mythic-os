@@ -128,11 +128,48 @@ If any task is L (large): split it before proceeding.
 
 For each Atomic Task:
 
+### README.md Gate (First Task Only)
+
+Before the first task dispatch, verify `[project-root]/README.md` exists:
+
+```bash
+test -f [project-root]/README.md && echo "EXISTS" || echo "MISSING"
+```
+
+- **EXISTS** — proceed to Implement.
+- **MISSING** — Create a minimal README.md now:
+
+  ```markdown
+  # [Project Name]
+
+  ## What This Is
+  [2-3 sentences from SPEC.md Section 1]
+
+  ## Tech Stack
+  [From Tech Selection Record in SPRINT.md]
+
+  ## Getting Started
+  [npm install && npm run dev — or equivalent from stack]
+  ```
+
+  Commit README.md, then proceed. This check runs once per sprint.
+
 ### Implement
 Classify and dispatch:
 - FE task → Frontend Developer (full SOP: SPEC.md Section 3, WCAG, TypeScript, lint)
 - BE task → Backend Developer (full SOP: schema first, FK indexes, transactions, lint)
 - Coupled → BE first, then FE
+
+**TDD for BE tasks:** Even in MVP mode, BE tasks with business logic require the red/green cycle. This is not ceremony — it catches logic bugs that are expensive to debug later. FE-only and config tasks skip TDD.
+
+When TDD applies, the specialist runs the gate script:
+```bash
+# After writing test, before implementation:
+bash ~/.claude/hooks/enforcement/tdd-gate.sh verify-red "<test_command>"
+# After implementation:
+bash ~/.claude/hooks/enforcement/tdd-gate.sh verify-green "<test_command>"
+```
+Both must exit 0 before the task can proceed.
 
 No shortcuts on implementation quality — MVP speed comes from reduced ceremony, not from skipping correctness.
 

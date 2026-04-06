@@ -26,6 +26,10 @@
           {
             "type": "command",
             "command": "python3 $HOME/.claude/hooks/enforcement/secret-scan.py"
+          },
+          {
+            "type": "command",
+            "command": "python3 $HOME/.claude/hooks/enforcement/readme-gate.py"
           }
         ]
       },
