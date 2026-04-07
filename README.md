@@ -11,18 +11,31 @@ cd mythic-os
 # Preview what will be installed (no changes made)
 bash mythic-install.sh
 
-# Install into ~/.claude
+# Install with symlinks (recommended)
 bash mythic-install.sh --apply
 ```
 
-The installer copies Mythic OS into `~/.claude`, merging with any existing files. Safe to re-run.
+The installer sets up:
+- `~/systems/mythic-os/` — source of truth (symlinked from wherever you cloned)
+- `~/systems/use-system.sh` — system switcher for multi-system setups
+- `~/projects/mythic/` — project workspace with walk-up CLAUDE.md
+- `~/.claude/` — symlinks pointing to the repo (skills, rules, hooks, etc.)
+
+Your existing `~/.claude/` runtime data (sessions, plans, history) is preserved. Your personal `claude.md` is never touched.
+
+**Alternative: flat copy install** (no symlinks, no `~/systems/` structure):
+```bash
+bash mythic-install.sh --apply --copy
+```
 
 ## Quick Start
 
 ```
-1. Open Claude Code
-2. Type /boot
-3. Type /cto "build a task tracker with auth"
+1. cd ~/projects/mythic
+2. mkdir my-app && cd my-app
+3. Open Claude Code: claude
+4. Type /boot
+5. Type /cto "build a task tracker with auth"
 ```
 
 Claude will run discovery, write a SPEC, plan a sprint, implement with specialist agents, run security scrubs, and QA every task against acceptance criteria.
@@ -85,7 +98,11 @@ Claude Code is powerful but unpredictable. It skips tests, forgets conventions, 
   -> Cross-experiment pattern learning carries insights forward
 ```
 
-Supports artifact groups (multi-file optimization), agent-based evaluation (test skills via real execution, not just grep), and cross-model evaluation (ensure artifacts work on Opus and Sonnet).
+## Architecture
+
+Mythic OS uses a symlink-based architecture. The repo at `~/systems/mythic-os/` is the single source of truth. `~/.claude/` contains symlinks pointing there, so Claude Code sees the skills, rules, and hooks at their expected runtime paths.
+
+The system switcher (`~/systems/use-system.sh`) manages these symlinks and merges your personal settings with the system's hooks. This means you can have multiple systems installed and switch between them — see [docs/walkthrough.md](docs/walkthrough.md) for the full architecture guide.
 
 ## Project Structure
 
@@ -96,8 +113,10 @@ hooks/          Enforcement hooks (PreToolUse/PostToolUse gates)
 stacks/         Stack templates (Next.js+Supabase, Astro, FastAPI)
 agents/         Reusable agent definitions
 commands/       Additional Claude commands
-templates/      PRD and project templates
-CLAUDE.md       Global constitution — loaded every session
+templates/      PRD, project, and walk-up CLAUDE.md templates
+scripts/        Operational scripts (publish, use-system switcher)
+docs/           Architecture walkthrough and guides
+CLAUDE.md       Global constitution — loaded every session via walk-up
 LIBRARY.md      Resource registry
 settings.json   Hook configuration
 ```
@@ -112,21 +131,10 @@ Mythic OS has three enforcement tiers:
 
 3. **Role-level** (behavioral contracts in `rules/`) — The agent follows SOPs defined in role contracts. Spec-first development, QA evidence requirements, Storyteller resource tracking.
 
-## Key Concepts
-
-**Mechanical gates** block actions automatically. If a project has a `SPEC.md` but no `README.md`, you literally cannot write implementation files — the hook returns exit 2 and the edit is rejected.
-
-**Team skills** coordinate multiple roles. `/team-fullstack` sequences: PM plans sprint -> Lead Dev selects stack -> specialists implement -> Security scrubs -> QA verifies -> Storyteller logs. Each handoff has a structured note.
-
-**TDD enforcement** for logic tasks. The Lead Developer classifies each task. When TDD applies, the specialist must run `tdd-gate.sh verify-red` (test fails) before implementing, then `tdd-gate.sh verify-green` (test passes) after. QA independently verifies via git history.
-
-**Arena** runs structured comparisons. Compare Claude Code configs, prompt strategies, models, or frameworks — with binary, numeric, and LLM-judged scoring criteria.
-
-**Self-iterate** is an autonomous optimization loop. Define an experiment, set eval criteria, and let it run. It modifies the target, evaluates, keeps improvements, reverts regressions, and logs everything to `results.tsv`. Cross-experiment pattern files let future experiments learn from past ones.
-
 ## Requirements
 
 - [Claude Code](https://claude.ai/download)
 - Git
 - Python 3 (for enforcement hooks)
-- Bash (for TDD gate scripts)
+- Bash
+- jq (for settings merge — `brew install jq` on macOS)

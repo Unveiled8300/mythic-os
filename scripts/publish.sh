@@ -84,9 +84,15 @@ if [ -d "$SOURCE_DIR/commands" ]; then
   cp -r "$SOURCE_DIR/commands" "$DIST_DIR/commands"
 fi
 
-# Scripts (including this publish script)
+# Scripts (publish + use-system switcher)
 mkdir -p "$DIST_DIR/scripts"
 cp "$SOURCE_DIR/scripts/publish.sh" "$DIST_DIR/scripts/"
+cp "$SOURCE_DIR/scripts/use-system.sh" "$DIST_DIR/scripts/" 2>/dev/null || true
+
+# Docs
+if [ -d "$SOURCE_DIR/docs" ]; then
+  cp -r "$SOURCE_DIR/docs" "$DIST_DIR/docs"
+fi
 
 # Brain — only the empty scaffold, never accumulated data
 mkdir -p "$DIST_DIR/brain/log/errors"
