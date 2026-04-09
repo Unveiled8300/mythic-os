@@ -18,6 +18,10 @@ mcp-needs-auth-cache.json
 vercel-plugin-*
 skills/**/.claude/
 .credentials.json
+.tdd-lock
+.tdd-skip
+.tdd-audit.jsonl
+.tdd-state.json
 
 # PERSONAL ACCUMULATION (stays local, never distributed)
 

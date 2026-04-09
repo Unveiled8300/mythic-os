@@ -12,7 +12,8 @@ Run `/boot` at every session start. It loads the active project and current spri
 | Lint must exit 0 before Handoff Note | Pre-commit hook rejects |
 | No secrets hardcoded — use `.env` only | `secret-scan.py` PreToolUse hook blocks Edit/Write |
 | No README.md, no implementation writes | `readme-gate.py` PreToolUse hook blocks Edit/Write in governed projects |
-| TDD red/green cycle for logic tasks | `tdd-gate.sh` script — skills run verify-red/verify-green via Bash |
+| No impl writes without test file | `tdd-enforce.py` PreToolUse hook blocks Edit/Write; bypass with `.tdd-skip` |
+| TDD audit trail | `tdd-audit.py` PostToolUse hook logs write order to `.tdd-audit.jsonl` |
 | Unregistered resources surfaced at session start | `/boot` SOP 0 audit |
 
 ## Behavioral Guardrails (Role-Enforced)
