@@ -201,4 +201,9 @@ Storyteller UUID: [resource_id] | N/A
 Lint Gate: confirmed PASS — Handoff Note T-[N]
 ```
 
-After QA PASS: the Project Manager moves T-[N] to the Done section in SPRINT.md.
+After QA PASS:
+1. Write the governance pass marker:
+   ```bash
+   python3 ~/.claude/hooks/enforcement/govpass.py write <project_root> qa-pass <task_id>
+   ```
+2. The Project Manager moves T-[N] to the Done section in SPRINT.md.

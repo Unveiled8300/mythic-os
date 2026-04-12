@@ -71,9 +71,17 @@ Open SPRINT.md. Find the task ID(s) specified in the invocation. Read:
 If a dependency task is not yet in the Done section, stop:
 > "T-[N] depends on T-[M], which is not yet complete. Complete T-[M] first."
 
-**Feature Forge check:** If SPRINT.md Tech Selection Record contains `Forge Mode: auto` and the
-task is size M, route to `/feature-forge T-[N]` instead of continuing to Step 2. Feature Forge
-will handle dispatch, evaluation, variant selection, and handoff internally.
+**Feature Forge gate (M-sized tasks):** If the task is size **M (Medium)**, route to
+`/feature-forge T-[N]` instead of continuing to Step 2. Feature Forge spawns 3 parallel
+variant implementations, evaluates them, and selects the winner. It handles dispatch,
+evaluation, variant selection, and handoff internally.
+
+- Size M → feature-forge with 3 variants (default)
+- Size M + algorithm/UI-layout/perf-critical tag → feature-forge with 5 variants
+- Override: If SPRINT.md Tech Selection Record contains `Forge Mode: off`, skip this gate
+  and dispatch directly to specialists (opt-out, not opt-in).
+- Override: If SPRINT.md Tech Selection Record contains `Forge Mode: manual`, only forge
+  when explicitly invoked via `/feature-forge T-[N]`.
 
 ### Wave-Based Multi-Task Dispatch
 

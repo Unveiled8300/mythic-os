@@ -230,3 +230,15 @@ PASS  — No CRITICAL/HIGH/MEDIUM findings OPEN (LOW/INFO are informational)
 5. **SKIP is not FAIL.** If a scan tool is not installed, report SKIP — don't penalize.
 6. **Respect .gitignore.** Don't scan `node_modules/`, `dist/`, `.next/`, `__pycache__/`, etc.
 7. **Scope flag narrows, never widens.** `--scope src/` means ONLY scan `src/`, not "also scan src/".
+
+## Step 8: Write Governance Marker
+
+After producing the report, if the verdict is PASS or WARN (not FAIL):
+
+```bash
+python3 ~/.claude/hooks/enforcement/govpass.py write <project_root> sweep-pass
+```
+
+This marker is required for Tier 2 (story completion) commits. It is NOT required on every commit — only when the commit message references a story ID (S-NN) or signals story completion.
+
+Do NOT write the marker if verdict is FAIL (critical/high findings remain).

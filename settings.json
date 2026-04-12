@@ -34,6 +34,18 @@
           {
             "type": "command",
             "command": "python3 $HOME/.claude/hooks/enforcement/tdd-enforce.py"
+          },
+          {
+            "type": "command",
+            "command": "python3 $HOME/.claude/hooks/enforcement/spec-gate.py"
+          },
+          {
+            "type": "command",
+            "command": "python3 $HOME/.claude/hooks/enforcement/sprint-gate.py"
+          },
+          {
+            "type": "command",
+            "command": "python3 $HOME/.claude/hooks/enforcement/api-doc-gate.py"
           }
         ]
       },
@@ -43,6 +55,18 @@
           {
             "type": "command",
             "command": "python3 $HOME/.claude/hooks/enforcement/catastrophic-gate.py"
+          },
+          {
+            "type": "command",
+            "command": "python3 $HOME/.claude/hooks/enforcement/branch-gate.py"
+          },
+          {
+            "type": "command",
+            "command": "python3 $HOME/.claude/hooks/enforcement/pr-size-gate.py"
+          },
+          {
+            "type": "command",
+            "command": "python3 $HOME/.claude/hooks/enforcement/handoff-gate.py"
           }
         ]
       }
@@ -58,6 +82,10 @@
           {
             "type": "command",
             "command": "python3 $HOME/.claude/hooks/enforcement/tdd-audit.py"
+          },
+          {
+            "type": "command",
+            "command": "python3 $HOME/.claude/hooks/enforcement/governance-audit-trail.py"
           }
         ]
       },
@@ -67,6 +95,10 @@
           {
             "type": "command",
             "command": "python3 $HOME/.claude/hooks/brain/error-capture.py"
+          },
+          {
+            "type": "command",
+            "command": "python3 $HOME/.claude/hooks/enforcement/session-summary-nudge.py"
           }
         ]
       }
@@ -77,6 +109,10 @@
           {
             "type": "command",
             "command": "python3 $HOME/.claude/hooks/context-loader/prompt-scanner.py"
+          },
+          {
+            "type": "command",
+            "command": "python3 $HOME/.claude/hooks/enforcement/context-budget-monitor.py"
           }
         ]
       }
